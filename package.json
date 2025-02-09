@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "postinstall": "npx prisma generate",
     "build": "tsc && prisma generate",
     "start": "npm run build && node ./dist/main.js",
     "dev": "nodemon --ext ts --exec ts-node src/main.ts"
