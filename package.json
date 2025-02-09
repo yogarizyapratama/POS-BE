@@ -6,7 +6,7 @@
     "test": "jest",
     "build": "tsc",
     "start": "node ./dist/main.js",
-    "dev": "nodemon ./src/main.ts"
+    "dev": "nodemon --ext ts --exec ts-node src/main.ts"
   },
   "jest": {
     "transform": {
