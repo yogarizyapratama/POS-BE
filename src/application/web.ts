@@ -14,6 +14,9 @@ import { apiRouter } from '../router/api';
 
 export const web = express();
 
+// 🔥 Tambahkan ini untuk mempercayai proxy
+web.set("trust proxy", 1);
+
 // Security Middlewares
 web.use(helmet());
 web.use(cors({
