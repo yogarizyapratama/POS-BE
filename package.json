@@ -5,8 +5,9 @@
   "scripts": {
     "test": "jest",
     "postinstall": "npx prisma generate",
-    "build": "tsc && prisma generate",
-    "start": "npm run build && node ./dist/main.js",
+    "build": "tsc && npx prisma generate",
+    "migrate": "npx prisma migrate deploy", 
+    "start": "npm run migrate && npm run build && node ./dist/main.js",
     "dev": "nodemon --ext ts --exec ts-node src/main.ts"
   },
   "jest": {
