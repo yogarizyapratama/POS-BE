@@ -11,9 +11,6 @@
         "src": "/(.*)",
         "dest": "/dist/main"
       }
-    ],
-    "hooks": {
-      "build": "prisma generate"
-    }
+    ]
   }
   
