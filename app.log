@@ -1,0 +1,3 @@
+{"level":"\u001b[32minfo\u001b[39m","message":"Listening on port 7001","timestamp":"2025-02-05 11:41:56"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Starting a mysql pool with 17 connections.","target":"quaint::pooled","timestamp":"2025-02-05 11:42:02"}
+{"level":"\u001b[32minfo\u001b[39m","message":{"duration":9,"params":"[\"32c8b7e3-3632-4e55-b2e5-bc685f5dca36\",1,0]","query":"SELECT `setup`.`users`.`username`, `setup`.`users`.`password`, `setup`.`users`.`name`, `setup`.`users`.`token` FROM `setup`.`users` WHERE `setup`.`users`.`token` = ? LIMIT ? OFFSET ?","target":"quaint::connector::metrics","timestamp":"2025-02-05T04:42:02.432Z"},"timestamp":"2025-02-05 11:42:02"}
