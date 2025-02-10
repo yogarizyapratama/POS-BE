@@ -6,8 +6,6 @@ import { Validation } from "../validation/validation";
 import {v4 as uuid} from 'uuid';
 import bcrypt from 'bcrypt';
 import { User } from "@prisma/client";
-import { encryptResponseJSON } from "../utils/hash";
-import { logger } from "../application/logging";
 
 export class UserService {
     static async register(request: CreateUserRequest): Promise<UserResponse> {
@@ -73,6 +71,7 @@ export class UserService {
                 expiresAt
             },
             create:{
+                id: uuid(),
                 token,
                 username : user.username,
                 expiresAt

@@ -8,84 +8,112 @@ datasource db {
 }
 
 model User {
-  username  String  @id @db.VarChar(100)
-  password  String  @db.VarChar(100)
-  name      String  @db.VarChar(100)
-  token     String? @db.VarChar(100)
-
-  contacts  Contact[] @relation("UserContact")
-  created_contacts Contact[] @relation("ContactCreator")
-  updated_contacts Contact[] @relation("ContactUpdater")
-
-  addresses Address[] @relation("UserAddressCreator")
-  updated_addresses Address[] @relation("UserAddressUpdater")
-
-  personal_access_tokens PersonalAccessToken? @relation("UserToken") 
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  username               String               @id @unique @db.VarChar(100)
+  password               String               @db.VarChar(100)
+  name                   String               @db.VarChar(100)
+  token                  String?              @db.VarChar(100)
+  created_at             DateTime             @default(now())
+  updated_at             DateTime             @updatedAt
+  addresses              Address[]            @relation("UserAddressCreator")
+  updated_addresses      Address[]            @relation("UserAddressUpdater")
+  created_contacts       Contact[]            @relation("ContactCreator")
+  updated_contacts       Contact[]            @relation("ContactUpdater")
+  contacts               Contact[]            @relation("UserContact")
+  personal_access_tokens PersonalAccessToken? @relation("UserToken")
+  store_configs_created  StoreConfig[]        @relation("StoreConfigCreator")
+  store_configs_updated  StoreConfig[]        @relation("StoreConfigUpdater")
+  stores_created         Store[]              @relation("StoreCreator")
+  stores                 Store[]              @relation("UserStores")
+  stores_updated         Store[]              @relation("StoreUpdater")
 
   @@map("users")
 }
 
 model Address {
-  id          Int      @id @default(autoincrement())
-  street      String?  @db.VarChar(255)
-  city        String?  @db.VarChar(100)
-  province    String?  @db.VarChar(100)
-  country     String   @db.VarChar(100)
-  postal_code String   @db.VarChar(100)
-  contactId   Int
-
-  contact     Contact  @relation(fields: [contactId], references: [id])
-
+  id              String   @id @default(uuid()) @db.Uuid
+  street          String?  @db.VarChar(255)
+  city            String?  @db.VarChar(100)
+  province        String?  @db.VarChar(100)
+  country         String   @db.VarChar(100)
+  postal_code     String   @db.VarChar(100)
+  contactId       String   @db.Uuid
   createdUsername String?  @db.VarChar(100)
   updatedUsername String?  @db.VarChar(100)
-
-  creator     User?    @relation("UserAddressCreator", fields: [createdUsername], references: [username])
-  updater     User?    @relation("UserAddressUpdater", fields: [updatedUsername], references: [username])
-
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  contact         Contact  @relation(fields: [contactId], references: [id])
+  creator         User?    @relation("UserAddressCreator", fields: [createdUsername], references: [username], onDelete: Cascade)
+  updater         User?    @relation("UserAddressUpdater", fields: [updatedUsername], references: [username], onDelete: Cascade)
 
   @@map("addresses")
 }
 
 model Contact {
-  id         Int     @id @default(autoincrement())
-  firstname  String  @db.VarChar(100)
-  lastname   String? @db.VarChar(100)
-  email      String? @db.VarChar(100)
-  phone      String? @db.VarChar(20)
-  username   String  @db.VarChar(100)
-
-  user       User    @relation("UserContact", fields: [username], references: [username])
-
-  createdUsername String? @db.VarChar(100)
-  updatedUsername String? @db.VarChar(100)
-
-  creator    User?   @relation("ContactCreator", fields: [createdUsername], references: [username])
-  updater    User?   @relation("ContactUpdater", fields: [updatedUsername], references: [username])
-
-  addresses  Address[]
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id              String    @id @default(uuid()) @db.Uuid
+  firstname       String    @db.VarChar(100)
+  lastname        String?   @db.VarChar(100)
+  email           String?   @db.VarChar(100)
+  phone           String?   @db.VarChar(20)
+  username        String    @db.VarChar(100)
+  createdUsername String?   @db.VarChar(100)
+  updatedUsername String?   @db.VarChar(100)
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  addresses       Address[]
+  creator         User?     @relation("ContactCreator", fields: [createdUsername], references: [username], onDelete: Cascade)
+  updater         User?     @relation("ContactUpdater", fields: [updatedUsername], references: [username], onDelete: Cascade)
+  user            User      @relation("UserContact", fields: [username], references: [username], onDelete: Cascade)
 
   @@map("contacts")
 }
 
 model PersonalAccessToken {
-  id          Int     @id @default(autoincrement())
-  token       String  @db.Text
-  username    String  @db.VarChar(100) @unique
-  expiresAt   DateTime
-  revoked     Boolean @default(false)
-
-  user        User    @relation("UserToken", fields: [username], references: [username], onDelete: Cascade) // One-to-One
-
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id         String   @id @default(uuid()) @db.Uuid
+  token      String
+  username   String   @unique @db.VarChar(100)
+  expiresAt  DateTime
+  revoked    Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user       User     @relation("UserToken", fields: [username], references: [username], onDelete: Cascade)
 
   @@map("personal_access_tokens")
+}
+
+model Store {
+  id              String       @id @default(uuid()) @db.Uuid
+  name            String       @db.VarChar(100)
+  description     String?
+  address         String?      @db.VarChar(255)
+  phone           String?      @db.VarChar(20)
+  email           String?      @db.VarChar(100)
+  slug            String?      @db.VarChar(100)
+  ownerUsername   String       @db.VarChar(100)
+  createdUsername String?      @db.VarChar(100)
+  updatedUsername String?      @db.VarChar(100)
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+  config          StoreConfig?
+  createdBy       User?        @relation("StoreCreator", fields: [createdUsername], references: [username], onDelete: Cascade)
+  owner           User         @relation("UserStores", fields: [ownerUsername], references: [username], onDelete: Cascade)
+  updatedBy       User?        @relation("StoreUpdater", fields: [updatedUsername], references: [username], onDelete: Cascade)
+
+  @@map("stores")
+}
+
+model StoreConfig {
+  id              String   @id @default(uuid()) @db.Uuid
+  storeId         String   @unique @db.Uuid
+  currency        String   @db.VarChar(10)
+  timezone        String   @db.VarChar(50)
+  tax_rate        Float?   @default(0.0)
+  createdUsername String?  @db.VarChar(100)
+  updatedUsername String?  @db.VarChar(100)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  createdBy       User?    @relation("StoreConfigCreator", fields: [createdUsername], references: [username], onDelete: Cascade)
+  store           Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  updatedBy       User?    @relation("StoreConfigUpdater", fields: [updatedUsername], references: [username], onDelete: Cascade)
+
+  @@map("store_configs")
 }
